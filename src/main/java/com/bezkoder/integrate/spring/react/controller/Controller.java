@@ -161,15 +161,16 @@ public class Controller {
 	@GetMapping("/addTutorials")
 	public List<Tutorial> addTutorials() {
 		final List<Author> authors = authorRepository.findAll();
+		final List<Domain> domains = domainRepository.findAll();
 		final List<Tutorial> tutorials = IntStream.range(0, 500)
 				.mapToObj(num -> new Tutorial(RandomStringUtils.randomAlphabetic(15),
 						RandomStringUtils.randomAlphabetic(35),
 						RandomUtils.nextBoolean(),
-						domainRepository.findById(RandomUtils.nextLong(1, 8)).get(),
+						domains.get(RandomUtils.nextInt(1, 8)),
 						"https://" + RandomStringUtils.randomAlphabetic(7) + ".com",
 						RandomUtils.nextInt(1, 5),
 						authors.get(RandomUtils.nextInt(1, 50))))
 				.collect(Collectors.toList());
-		return tutorials;
+		return tutorialRepository.saveAll(tutorials);
 	}
 }
