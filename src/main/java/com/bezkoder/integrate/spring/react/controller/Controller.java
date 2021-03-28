@@ -9,7 +9,10 @@ import com.bezkoder.integrate.spring.react.repository.TutorialRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -143,5 +146,14 @@ public class Controller {
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
+	}
+
+	@GetMapping("/addAuthors")
+	public String addAuthors() {
+		final List<Author> authors = IntStream.range(0, 50)
+				.mapToObj(num -> new Author(RandomStringUtils.randomAlphabetic(7), RandomStringUtils.randomAlphabetic(7), RandomStringUtils.randomAlphabetic(20)))
+				.collect(Collectors.toList());
+		authorRepository.saveAll(authors);
+		return "OK";
 	}
 }
