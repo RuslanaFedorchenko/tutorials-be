@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -155,5 +156,20 @@ public class Controller {
 				.collect(Collectors.toList());
 		authorRepository.saveAll(authors);
 		return "OK";
+	}
+
+	@GetMapping("/addTutorials")
+	public List<Tutorial> addTutorials() {
+		final List<Author> authors = authorRepository.findAll();
+		final List<Tutorial> tutorials = IntStream.range(0, 500)
+				.mapToObj(num -> new Tutorial(RandomStringUtils.randomAlphabetic(15),
+						RandomStringUtils.randomAlphabetic(35),
+						RandomUtils.nextBoolean(),
+						domainRepository.findById(RandomUtils.nextLong(1, 8)).get(),
+						"https://" + RandomStringUtils.randomAlphabetic(7) + ".com",
+						RandomUtils.nextInt(1, 5),
+						authors.get(RandomUtils.nextInt(1, 50))))
+				.collect(Collectors.toList());
+		return tutorials;
 	}
 }
